@@ -13,7 +13,7 @@ function agregarNuevoJuego(nuevoJuego) {
     if (!nuevoJuego){
         alert("Ingresa el nombre de tu juego")
     } else{
-        videojuego3 = nuevoJuego
+        juego3 = nuevoJuego
         alert(`Has agregado "${nuevoJuego}" a tu lista`)
     }
     
