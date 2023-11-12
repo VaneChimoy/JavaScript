@@ -14,3 +14,22 @@ p{
     display: flex;
     justify-content: center;
 }
+
+
+#gameList {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.game {
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin: 10px;
+    text-align: center;
+}
+
+#cart {
+    margin-top: 20px;
+    border-top: 2px solid #333;
+    padding-top: 10px;
+}

@@ -1,75 +1,110 @@
-let username = prompt("Cual es tu nombre?");
-alert("Bienvenid@ de vuelta a tu lista de videojuegos, " + username);
+// Predefined list of Nintendo 64 games
+const games = [
+    { id: 1, title: "Super Mario 64", price: 29.99 },
+    { id: 2, title: "The Legend of Zelda: Ocarina of Time", price: 39.99 },
+    { id: 3, title: "Mario Kart 64", price: 24.99 },
+    { id: 4, title: "GoldenEye 007", price: 19.99 },
+    { id: 5, title: "Banjo-Kazooie", price: 34.99 }
+];
 
-const videoGamesList = [];
+// Initialize the game list and cart
+function initialize() {
+    displayGameList();
+    displayCart();
+}
 
-function mostrarVideojuegos() {
-    if (videoGamesList.length === 0) {
-        alert("Tu lista de videojuegos está vacía.");
-    } else {
-        let message = "Tus videojuegos son:\n";
-        for (let i = 0; i < videoGamesList.length; i++) {
-            message += `${i + 1}. ${videoGamesList[i].nombre} - Precio: ${videoGamesList[i].precio}\n`;
-        }
-        alert(message);
+// Display the list of games
+function displayGameList() {
+    const gameListDiv = document.getElementById("gameList");
+
+    games.forEach(game => {
+        const gameDiv = document.createElement("div");
+        gameDiv.classList.add("game");
+        gameDiv.innerHTML = `
+            <h3>${game.title}</h3>
+            <p>$${game.price.toFixed(2)}</p>
+            <button onclick="addToCart(${game.id})">Add to Cart</button>
+        `;
+        gameListDiv.appendChild(gameDiv);
+    });
+}
+
+// Add a game to the cart
+function addToCart(gameId) {
+    const selectedGame = games.find(game => game.id === gameId);
+
+    if (selectedGame) {
+        let cart = getCartFromLocalStorage();
+        cart.push(selectedGame);
+        updateCartInLocalStorage(cart);
+        displayCart();
     }
 }
 
-function agregarNuevoVideojuego() {
-    const nombre = prompt("Ingresa el nombre del videojuego:");
-    const precio = parseFloat(prompt("Ingresa el precio del videojuego:"));
-    
-    if (!nombre || isNaN(precio)) {
-        alert("Ingresa un nombre y precio válidos.");
-    } else {
-        videoGamesList.push({ nombre, precio });
-        alert(`Has agregado "${nombre}" a tu lista de videojuegos.`);
-    }
+// Display the shopping cart
+function displayCart() {
+    const cartList = document.getElementById("cartList");
+    const totalPriceElement = document.getElementById("totalPrice");
+
+    let cart = getCartFromLocalStorage();
+
+    cartList.innerHTML = "";
+    let total = 0;
+
+    cart.forEach(item => {
+        const listItem = document.createElement("li");
+        listItem.textContent = `${item.title} - $${item.price.toFixed(2)}`;
+        cartList.appendChild(listItem);
+        total += item.price;
+    });
+
+    totalPriceElement.textContent = total.toFixed(2);
+
+    // Clear existing buttons
+    const existingButtons = document.querySelectorAll("#cart button");
+    existingButtons.forEach(button => button.remove());
+
+    // Add "Pagar" button
+    const payButton = document.createElement("button");
+    payButton.textContent = "Pagar";
+    payButton.onclick = () => {
+        // Redirecting to the "thankyou.html" page
+        // window.location.href = "thankyou.html";
+
+        // Displaying a thank you message on the same page
+        displayThankYouMessage();
+    };
+    document.getElementById("cart").appendChild(payButton);
+
+    // Add "Eliminar Juegos" button
+    const removeGamesButton = document.createElement("button");
+    removeGamesButton.textContent = "Eliminar Juegos";
+    removeGamesButton.onclick = removeGamesFromCart;
+    document.getElementById("cart").appendChild(removeGamesButton);
 }
 
-function buscarPorRangoDePrecios() {
-    const minPrice = parseFloat(prompt("Ingresa el precio mínimo del rango:"));
-    const maxPrice = parseFloat(prompt("Ingresa el precio máximo del rango:"));
-    
-    if (isNaN(minPrice) || isNaN(maxPrice)) {
-        alert("Ingresa precios válidos.");
-        return;
-    }
-
-    const filteredGames = videoGamesList.filter(game => game.precio >= minPrice && game.precio <= maxPrice);
-    if (filteredGames.length === 0) {
-        alert("No se encontraron juegos en ese rango de precios.");
-    } else {
-        let message = "Juegos en el rango de precios:\n";
-        for (let i = 0; i < filteredGames.length; i++) {
-            message += `${i + 1}. ${filteredGames[i].nombre} - Precio: ${filteredGames[i].precio}\n`;
-        }
-        alert(message);
-    }
+// Display a thank you message on the same page
+function displayThankYouMessage() {
+    const cartDiv = document.getElementById("cart");
+    cartDiv.innerHTML = "<h2>Gracias por su compra</h2>";
 }
 
-function listaDeOpciones() {
-    let opcion;
-    do {
-        opcion = parseInt(prompt("Menu:\n" + "1. Mostrar lista de videojuegos\n" + "2. Agregar nuevo videojuego\n" + "3. Buscar por rango de precios\n" + "4. Salir"));
-
-        switch (opcion) {
-            case 1:
-                mostrarVideojuegos();
-                break;
-            case 2:
-                agregarNuevoVideojuego();
-                break;
-            case 3:
-                buscarPorRangoDePrecios();
-                break;
-            case 4:
-                alert("Gracias por usar la lista de videojuegos.");
-                break;
-            default:
-                alert("Opción no válida.");
-        }
-    } while (opcion !== 4);
+// Remove all games from the cart
+function removeGamesFromCart() {
+    updateCartInLocalStorage([]);
+    displayCart();
 }
 
-listaDeOpciones();
+// Get the cart from local storage
+function getCartFromLocalStorage() {
+    const cartString = localStorage.getItem("shoppingCart");
+    return cartString ? JSON.parse(cartString) : [];
+}
+
+// Update the cart in local storage
+function updateCartInLocalStorage(cart) {
+    localStorage.setItem("shoppingCart", JSON.stringify(cart));
+}
+
+// Initialize the page
+initialize();
