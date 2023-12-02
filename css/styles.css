@@ -1,35 +1,82 @@
-h1{
-    color:rgb(225, 44, 159);
-    font-size: 50px;
-    text-align: center;
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #fce4ec; /* Color de fondo rosa claro */
+    margin: 0;
+    padding: 0;
 }
-p{
-    color:rgb(225, 44, 159);
-    font-size: 40px;
-    text-align: center;
-}
-
-.zelda{
-    width: 100%;
-    display: flex;
-    justify-content: center;
-}
-
 
 #gameList {
     display: flex;
     flex-wrap: wrap;
+    justify-content: space-around;
+    margin: 20px;
 }
 
 .game {
-    border: 1px solid #ddd;
-    padding: 10px;
+    background-color: #fff; /* Fondo blanco para cada juego */
+    border: 2px solid #f06292; /* Borde rosa */
+    border-radius: 10px;
+    padding: 15px;
     margin: 10px;
     text-align: center;
 }
 
-#cart {
-    margin-top: 20px;
-    border-top: 2px solid #333;
-    padding-top: 10px;
+button {
+    background-color: #f06292; /* Fondo rosa para botones */
+    color: #fff; /* Texto blanco en los botones */
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 5px;
 }
+
+button:hover {
+    background-color: #ec407a; /* Cambio de color al pasar el ratón sobre el botón */
+}
+
+#cart {
+    background-color: #fff;
+    border: 2px solid #f06292;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 20px;
+    text-align: center;
+}
+
+#cartList {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    margin: 10px;
+}
+
+p {
+    font-size: 18px;
+}
+
+#totalPrice {
+    font-weight: bold;
+    color: #f06292;
+}
+
+h1 {
+    color: #f06292;
+    display: flex;
+    justify-content: center;
+    position:  center;
+}
+
+.zelda{
+    display: flex;
+    justify-content: center;
+    position:  center;
+}
+h2 {
+    color: #f06292;
+
+}
+
+
+/* Agrega estilos adicionales según sea necesario */

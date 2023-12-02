@@ -1,39 +1,44 @@
-const games = [
-    { id: 1, title: "Super Mario 64", price: 29.99 },
-    { id: 2, title: "The Legend of Zelda: Ocarina of Time", price: 39.99 },
-    { id: 3, title: "Mario Kart 64", price: 24.99 },
-    { id: 4, title: "GoldenEye 007", price: 19.99 },
-    { id: 5, title: "Banjo-Kazooie", price: 34.99 }
-];
+document.addEventListener('DOMContentLoaded', initialize);
 
 function initialize() {
     displayGameList();
+    displayCart();
 }
 
 function displayGameList() {
-    const gameListDiv = document.getElementById("gameList");
+    fetch('games.json')
+        .then(response => response.json())
+        .then(games => {
+            const gameListDiv = document.getElementById("gameList");
 
-    games.forEach(game => {
-        const gameDiv = document.createElement("div");
-        gameDiv.classList.add("game");
-        gameDiv.innerHTML = `
-            <h3>${game.title}</h3>
-            <p>$${game.price.toFixed(2)}</p>
-            <button onclick="addToCart(${game.id})">Add to Cart</button>
-        `;
-        gameListDiv.appendChild(gameDiv);
-    });
+            games.forEach(game => {
+                const gameDiv = document.createElement("div");
+                gameDiv.classList.add("game");
+                gameDiv.innerHTML = `
+                    <h3>${game.title}</h3>
+                    <p>$${game.price.toFixed(2)}</p>
+                    <button onclick="addToCart(${game.id})">Add to Cart</button>
+                `;
+                gameListDiv.appendChild(gameDiv);
+            });
+        })
+        .catch(error => console.error('Error fetching games:', error));
 }
 
 function addToCart(gameId) {
-    const selectedGame = games.find(game => game.id === gameId);
+    fetch('games.json')
+        .then(response => response.json())
+        .then(games => {
+            const selectedGame = games.find(game => game.id === gameId);
 
-    if (selectedGame) {
-        let cart = getCartFromLocalStorage();
-        cart.push(selectedGame);
-        updateCartInLocalStorage(cart);
-        displayCart();
-    }
+            if (selectedGame) {
+                let cart = getCartFromLocalStorage();
+                cart.push(selectedGame);
+                updateCartInLocalStorage(cart);
+                displayCart();
+            }
+        })
+        .catch(error => console.error('Error fetching games:', error));
 }
 
 function displayCart() {
@@ -45,9 +50,12 @@ function displayCart() {
     cartList.innerHTML = "";
     let total = 0;
 
-    cart.forEach(item => {
+    cart.forEach((item, index) => {
         const listItem = document.createElement("li");
-        listItem.textContent = `${item.title} - $${item.price.toFixed(2)}`;
+        listItem.innerHTML = `
+            ${item.title} - $${item.price.toFixed(2)}
+            <button onclick="removeFromCart(${index})">Eliminar</button>
+        `;
         cartList.appendChild(listItem);
         total += item.price;
     });
@@ -60,7 +68,11 @@ function displayCart() {
     const payButton = document.createElement("button");
     payButton.textContent = "Pagar";
     payButton.onclick = () => {
-        displayThankYouMessage();
+        Swal.fire({
+            title: '¡Gracias por su compra!',
+            icon: 'success',
+            confirmButtonText: 'Aceptar'
+        });
     };
     document.getElementById("cart").appendChild(payButton);
 
@@ -70,14 +82,30 @@ function displayCart() {
     document.getElementById("cart").appendChild(removeGamesButton);
 }
 
-function displayThankYouMessage() {
-    const cartDiv = document.getElementById("cart");
-    cartDiv.innerHTML = "<h2>Gracias por su compra</h2>";
+function removeFromCart(index) {
+    let cart = getCartFromLocalStorage();
+
+    if (index >= 0 && index < cart.length) {
+        cart.splice(index, 1);
+        updateCartInLocalStorage(cart);
+        displayCart();
+    }
 }
 
 function removeGamesFromCart() {
-    updateCartInLocalStorage([]);
-    displayCart();
+    Swal.fire({
+        title: '¿Está seguro?',
+        text: "Esta acción eliminará todos los juegos del carrito.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            updateCartInLocalStorage([]);
+            displayCart();
+        }
+    });
 }
 
 function getCartFromLocalStorage() {
@@ -88,5 +116,3 @@ function getCartFromLocalStorage() {
 function updateCartInLocalStorage(cart) {
     localStorage.setItem("shoppingCart", JSON.stringify(cart));
 }
-
-initialize();

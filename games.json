@@ -1,0 +1,7 @@
+[
+    { "id": 1, "title": "Super Mario 64", "price": 29.99 },
+    { "id": 2, "title": "The Legend of Zelda: Ocarina of Time", "price": 39.99 },
+    { "id": 3, "title": "Mario Kart 64", "price": 24.99 },
+    { "id": 4, "title": "GoldenEye 007", "price": 19.99 },
+    { "id": 5, "title": "Banjo-Kazooie", "price": 34.99 }
+]
